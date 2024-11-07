@@ -1,4 +1,5 @@
 import argparse
+import ipaddress
 import sys
 
 from utils.constants import (
@@ -12,11 +13,14 @@ from utils.constants import (
 class Parser:
     def __init__(self):
         parser = argparse.ArgumentParser(description="Port Scanner")
-        parser.add_argument("target", help="Target IP address to scan.")
+        parser.add_argument(
+            "target", type=validate_ipv4, help="Target IP address to scan."
+        )
+
         parser.add_argument(
             "--start",
             "-s",
-            type=int,
+            type=validate_port,
             default=DEFAULT_START_PORT,
             help=f"Starting Port (default: {DEFAULT_START_PORT})",
         )
@@ -24,7 +28,7 @@ class Parser:
         parser.add_argument(
             "--end",
             "-e",
-            type=int,
+            type=validate_port,
             default=DEFAULT_END_PORT,
             help=f"Ending Port (default: {DEFAULT_END_PORT})",
         )
@@ -32,15 +36,15 @@ class Parser:
         parser.add_argument(
             "--delay",
             "-d",
-            type=int,
+            type=validate_positive_integer,
             default=DEFAULT_DELAY_MS,
-            help=f"Delay between scans (ms) (default: {DEFAULT_DELAY_MS})",
+            help=f"Delay between port scans (ms) (default: {DEFAULT_DELAY_MS})",
         )
 
         parser.add_argument(
             "--threads",
             "-t",
-            type=int,
+            type=validate_positive_integer,
             default=MAX_THREADS,
             help=f"Max threads used to send packets (default: {DEFAULT_DELAY_MS})",
         )
@@ -69,3 +73,37 @@ class Parser:
 
     def __repr__(self):
         return self.__str__()
+
+
+def validate_port(value):
+    try:
+        port = int(value)
+        if not 0 < port < 65535:
+            raise ValueError
+        return port
+    except:
+        sys.exit(
+            f"Invalid port number: {value}. Port needs to be an integer between 1 and 65535"
+        )
+
+
+def validate_ipv4(value):
+    try:
+        ip = ipaddress.ip_address(str(value))
+        if not ip.version == 4:
+            raise ValueError
+        return str(value)
+    except:
+        sys.exit(f"Invalid IPv4 address format: {value}.")
+
+
+def validate_positive_integer(value):
+    try:
+        num = int(value)
+        if num <= 0:
+            raise ValueError
+        return num
+    except:
+        sys.exit(
+            f"Invalid positive number: {value}. Value needs to be a positive number."
+        )
