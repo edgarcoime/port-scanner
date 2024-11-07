@@ -34,10 +34,10 @@ class Parser:
         )
 
         args = parser.parse_args()
-        self.start_port = args.start
-        self.end_port = args.end
-        self.delay = args.delay
-        self.target = args.target
+        self.start_port: int = args.start
+        self.end_port: int = args.end
+        self.delay: int = args.delay
+        self.target: str = args.target
 
     def __str__(self):
         return f"Target: {self.target}, Start Port: {self.start_port}, End Port: {self.end_port}, Delay: {self.delay}"

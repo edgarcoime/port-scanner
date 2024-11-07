@@ -11,6 +11,7 @@ class PortScanner:
         self.config = args
 
     def scan(self):
+        config = self.config
         print("Scanning Target: ", self.config.target)
 
     def __str__(self) -> str:
