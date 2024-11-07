@@ -1,38 +1,47 @@
 import argparse
 
-from utils.constants import DEFAULT_DELAY_MS, DEFAULT_END_PORT, DEFAULT_START_PORT
+from utils.constants import (
+    DEFAULT_DELAY_MS,
+    DEFAULT_END_PORT,
+    DEFAULT_START_PORT,
+    MAX_THREADS,
+)
 
 
 class Parser:
     def __init__(self):
-        default_start_port = DEFAULT_START_PORT
-        default_end_port = DEFAULT_END_PORT
-        default_delay_ms = DEFAULT_DELAY_MS
-
         parser = argparse.ArgumentParser(description="Port Scanner")
         parser.add_argument("target", help="Target IP address to scan.")
         parser.add_argument(
             "--start",
             "-s",
             type=int,
-            default=default_start_port,
-            help=f"Starting Port (default: {default_start_port})",
+            default=DEFAULT_START_PORT,
+            help=f"Starting Port (default: {DEFAULT_START_PORT})",
         )
 
         parser.add_argument(
             "--end",
             "-e",
             type=int,
-            default=default_end_port,
-            help=f"Ending Port (default: {default_end_port})",
+            default=DEFAULT_END_PORT,
+            help=f"Ending Port (default: {DEFAULT_END_PORT})",
         )
 
         parser.add_argument(
             "--delay",
             "-d",
             type=int,
-            default=default_delay_ms,
-            help=f"Delay between scans (ms) (default: {default_delay_ms})",
+            default=DEFAULT_DELAY_MS,
+            help=f"Delay between scans (ms) (default: {DEFAULT_DELAY_MS})",
+        )
+
+        parser.add_argument(
+            "--threads",
+            "-t",
+            type=int,
+            default=MAX_THREADS,
+            help=f"Max threads used to send packets (default: {DEFAULT_DELAY_MS})",
         )
 
         args = parser.parse_args()
@@ -44,9 +53,16 @@ class Parser:
         # Delay in seconds
         self.delay: int = delay_sec
         self.target: str = args.target
+        self.max_threads: int = args.threads
 
     def __str__(self):
-        return f"Target: {self.target}, Start Port: {self.start_port}, End Port: {self.end_port}, Delay: {self.delay}"
+        return (
+            f"Target: {self.target}\n"
+            f"Start Port: {self.start_port}\n"
+            f"End Port: {self.end_port}\n"
+            f"Delay: {self.delay}\n"
+            f"Max Threads: {self.max_threads}\n"
+        )
 
     def __repr__(self):
-        return f"Target: {self.target}, Start Port: {self.start_port}, End Port: {self.end_port}, Delay: {self.delay}"
+        return self.__str__()

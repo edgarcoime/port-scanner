@@ -33,10 +33,9 @@ class PortStatus(Enum):
 
 
 class PortScanner:
-    def __init__(self, args: Parser, max_threads: int = MAX_THREADS):
+    def __init__(self, args: Parser):
         conf.verb = False
         self.config = args
-        self.max_threads = max_threads
 
     def check_target(self):
         ip = IP(dst=self.config.target)
@@ -60,7 +59,7 @@ class PortScanner:
         scanned_ports = 0
         start_time = datetime.datetime.now()
 
-        with ThreadPoolExecutor(max_workers=self.max_threads) as executor:
+        with ThreadPoolExecutor(max_workers=config.max_threads) as executor:
             # create threads
             futures = {}
             for p in range(config.start_port, config.end_port + 1):
@@ -151,7 +150,7 @@ class PortScanner:
         return PortStatus.UNKNOWN
 
     def __str__(self) -> str:
-        return f"max_threads={self.max_threads} config: {self.config}"
+        return f"PortScanner: {self.config}"
 
     def __repr__(self) -> str:
-        return f"max_threads={self.max_threads} config: {self.config}"
+        return self.__str__()
