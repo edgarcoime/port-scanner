@@ -1,5 +1,9 @@
+from argparser import Parser
+
+
 def main():
-    print("Hello, World!")
+    parser = Parser()
+    print(parser)
 
 
 if __name__ == "__main__":
