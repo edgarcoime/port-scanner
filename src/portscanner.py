@@ -14,7 +14,7 @@ from argparser import Parser
 from utils.constants import MAX_THREADS, SCAN_RETRIES, SCAN_TIMEOUT_SEC
 
 # Create logs/errors directory if it doesn't exist
-os.makedirs("logs/errors", exist_ok=True)
+os.makedirs("logs/", exist_ok=True)
 
 # Set up logging configuration
 logging.basicConfig(
@@ -53,7 +53,11 @@ class PortScanner:
         config = self.config
         print("Scanning Target IP: ", self.config.target)
 
-        results = {}
+        open_ports = []
+        closed_ports = 0
+        filtered_ports = 0
+        unknown_ports = 0
+        scanned_ports = 0
         start_time = datetime.datetime.now()
 
         with ThreadPoolExecutor(max_workers=self.max_threads) as executor:
@@ -67,14 +71,47 @@ class PortScanner:
             for future in as_completed(futures):
                 port = futures[future]
                 try:
+                    scanned_ports += 1
+
+                    if scanned_ports % 100 == 0:
+                        print(
+                            f"Scanned {scanned_ports}/{config.end_port - config.start_port + 1} ports"
+                        )
+
                     status = future.result()
-                    results[port] = status
+                    if status == PortStatus.OPEN:
+                        open_ports.append(port)
+                    elif status == PortStatus.CLOSED:
+                        closed_ports += 1
+                    elif status == PortStatus.FILTERED:
+                        filtered_ports += 1
+                    else:
+                        unknown_ports += 1
+
                 except Exception as e:
                     # output the error into an error log file
-                    print(f"Port {port}: Error - {e}", flush=True)
+                    msg = f"Port {port}: Error - {e}"
+                    logging.error(msg)
+                    print(msg, flush=True)
 
         end_time = datetime.datetime.now()
         elapsed_time = (end_time - start_time).total_seconds()
+
+        print(
+            "\nScanned a total of {}/{} ports in {} seconds".format(
+                scanned_ports,
+                config.end_port - config.start_port + 1,
+                round(elapsed_time, 4),
+            )
+        )
+        print("Open ports: ", len(open_ports))
+        print("Closed ports: ", closed_ports)
+        print(f"Filtered ports: {filtered_ports}\n")
+
+        if len(open_ports) > 0:
+            print("Found the following open ports: ")
+            for p in open_ports:
+                print(f"  - {p}")
 
     def scan_port(
         self, target: str, port: int, timeout=SCAN_TIMEOUT_SEC, retries=SCAN_RETRIES
@@ -85,7 +122,7 @@ class PortScanner:
         tcp = TCP(dport=port, flags="S")
         packet = ip / tcp
 
-        print(f"Scanning {target}:{port}", flush=True)
+        # print(f"Scanning {target}:{port}", flush=True)
 
         # Send SYN packet until retries are exhausted
         for _ in range(retries):
