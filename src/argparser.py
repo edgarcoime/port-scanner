@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 from utils.constants import (
     DEFAULT_DELAY_MS,
@@ -46,8 +47,10 @@ class Parser:
 
         args = parser.parse_args()
 
-        delay_sec = args.delay / 1000
+        if args.start > args.end:
+            sys.exit("Starting port cannot be greater than ending port.")
 
+        delay_sec = args.delay / 1000
         self.start_port: int = args.start
         self.end_port: int = args.end
         # Delay in seconds

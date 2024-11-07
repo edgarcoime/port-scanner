@@ -11,7 +11,7 @@ from scapy.layers.inet import ICMP, IP, TCP
 from scapy.sendrecv import sr1
 
 from argparser import Parser
-from utils.constants import MAX_THREADS, SCAN_RETRIES, SCAN_TIMEOUT_SEC
+from utils.constants import SCAN_RETRIES, SCAN_TIMEOUT_SEC
 
 # Create logs/errors directory if it doesn't exist
 os.makedirs("logs/", exist_ok=True)
