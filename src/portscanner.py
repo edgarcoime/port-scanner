@@ -6,6 +6,7 @@ from scapy.layers.inet import ICMP, IP, TCP
 from scapy.sendrecv import conf, sr1
 
 from argparser import Parser
+from utils.constants import SCAN_RETRIES, SCAN_TIMEOUT_SEC
 
 
 class PortStatus(Enum):
@@ -13,10 +14,6 @@ class PortStatus(Enum):
     CLOSED = "CLOSED"
     FILTERED = "FILTERED"
     UNKNOWN = "UNKNOWN"
-
-
-TIMEOUT_SEC = 2
-RETRIES = 2
 
 
 class PortScanner:
@@ -29,7 +26,7 @@ class PortScanner:
         self.scan_port(config.target, 22)
 
     def scan_port(
-        self, target: str, port: int, timeout=TIMEOUT_SEC, retries=RETRIES
+        self, target: str, port: int, timeout=SCAN_TIMEOUT_SEC, retries=SCAN_RETRIES
     ) -> PortStatus:
         conf.verb = 0
 

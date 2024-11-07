@@ -3,9 +3,9 @@ import argparse
 
 class Parser:
     def __init__(self):
-        DEFAULT_START = 1
-        DEFAULT_END = 65535
-        DEFAULT_DELAY = 0
+        start_port = 1
+        end_port = 65535
+        delay_ms = 0
 
         parser = argparse.ArgumentParser(description="Port Scanner")
         parser.add_argument("target", help="Target IP address to scan.")
@@ -13,24 +13,24 @@ class Parser:
             "--start",
             "-s",
             type=int,
-            default=DEFAULT_START,
-            help=f"Starting Port (default: {DEFAULT_START})",
+            default=start_port,
+            help=f"Starting Port (default: {start_port})",
         )
 
         parser.add_argument(
             "--end",
             "-e",
             type=int,
-            default=DEFAULT_END,
-            help=f"Ending Port (default: {DEFAULT_END})",
+            default=end_port,
+            help=f"Ending Port (default: {end_port})",
         )
 
         parser.add_argument(
             "--delay",
             "-d",
             type=int,
-            default=DEFAULT_DELAY,
-            help=f"Delay between scans (default: {DEFAULT_DELAY})",
+            default=delay_ms,
+            help=f"Delay between scans (default: {delay_ms})",
         )
 
         args = parser.parse_args()
