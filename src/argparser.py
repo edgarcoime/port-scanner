@@ -1,11 +1,13 @@
 import argparse
 
+from utils.constants import DEFAULT_DELAY_MS, DEFAULT_END_PORT, DEFAULT_START_PORT
+
 
 class Parser:
     def __init__(self):
-        start_port = 1
-        end_port = 65535
-        delay_ms = 0
+        default_start_port = DEFAULT_START_PORT
+        default_end_port = DEFAULT_END_PORT
+        default_delay_ms = DEFAULT_DELAY_MS
 
         parser = argparse.ArgumentParser(description="Port Scanner")
         parser.add_argument("target", help="Target IP address to scan.")
@@ -13,30 +15,34 @@ class Parser:
             "--start",
             "-s",
             type=int,
-            default=start_port,
-            help=f"Starting Port (default: {start_port})",
+            default=default_start_port,
+            help=f"Starting Port (default: {default_start_port})",
         )
 
         parser.add_argument(
             "--end",
             "-e",
             type=int,
-            default=end_port,
-            help=f"Ending Port (default: {end_port})",
+            default=default_end_port,
+            help=f"Ending Port (default: {default_end_port})",
         )
 
         parser.add_argument(
             "--delay",
             "-d",
             type=int,
-            default=delay_ms,
-            help=f"Delay between scans (default: {delay_ms})",
+            default=default_delay_ms,
+            help=f"Delay between scans (ms) (default: {default_delay_ms})",
         )
 
         args = parser.parse_args()
+
+        delay_sec = args.delay / 1000
+
         self.start_port: int = args.start
         self.end_port: int = args.end
-        self.delay: int = args.delay
+        # Delay in seconds
+        self.delay: int = delay_sec
         self.target: str = args.target
 
     def __str__(self):
