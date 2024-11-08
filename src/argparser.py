@@ -44,7 +44,7 @@ class Parser:
         parser.add_argument(
             "--threads",
             "-t",
-            type=validate_positive_integer,
+            type=lambda x: validate_int_threshold(x, 1),
             default=MAX_THREADS,
             help=f"Max threads used to send packets (default: {DEFAULT_DELAY_MS})",
         )
@@ -95,6 +95,18 @@ def validate_ipv4(value):
         return str(value)
     except:
         sys.exit(f"Invalid IPv4 address format: {value}.")
+
+
+def validate_int_threshold(value, min: int):
+    try:
+        num = int(value)
+        if num < min:
+            raise ValueError
+        return num
+    except:
+        sys.exit(
+            f"Invalid number {value}. Value needs to be an integer greater than or equal to {min}."
+        )
 
 
 def validate_positive_integer(value):
