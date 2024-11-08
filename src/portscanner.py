@@ -74,7 +74,9 @@ class PortScanner:
                     scanned_ports += 1
                     if scanned_ports % 100 == 0:
                         print(
-                            f"Scanned {scanned_ports}/{config.end_port - config.start_port + 1} ports"
+                            f"\rScanned {scanned_ports}/{config.end_port - config.start_port + 1} ports",
+                            end="",
+                            flush=True,
                         )
 
                     status = future.result()
