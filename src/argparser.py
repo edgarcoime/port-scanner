@@ -107,15 +107,3 @@ def validate_greater_than(value, min: int):
         sys.exit(
             f"Invalid number {value}. Value needs to be an integer greater than or equal to {min}."
         )
-
-
-def validate_positive_integer(value):
-    try:
-        num = int(value)
-        if num <= 0:
-            raise ValueError
-        return num
-    except:
-        sys.exit(
-            f"Invalid positive number: {value}. Value needs to be a positive number."
-        )
