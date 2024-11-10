@@ -36,7 +36,7 @@ class Parser:
         parser.add_argument(
             "--delay",
             "-d",
-            type=validate_positive_integer,
+            type=lambda x: validate_greater_than(x, 0),
             default=DEFAULT_DELAY_MS,
             help=f"Delay between port scans (ms) (default: {DEFAULT_DELAY_MS})",
         )
@@ -44,9 +44,9 @@ class Parser:
         parser.add_argument(
             "--threads",
             "-t",
-            type=lambda x: validate_int_threshold(x, 1),
+            type=lambda x: validate_greater_than(x, 1),
             default=MAX_THREADS,
-            help=f"Max threads used to send packets (default: {DEFAULT_DELAY_MS})",
+            help=f"Max threads used to send packets (default: {MAX_THREADS})",
         )
 
         args = parser.parse_args()
@@ -67,7 +67,7 @@ class Parser:
             f"Target: {self.target}\n"
             f"Start Port: {self.start_port}\n"
             f"End Port: {self.end_port}\n"
-            f"Delay: {self.delay}\n"
+            f"Delay (sec): {self.delay}\n"
             f"Max Threads: {self.max_threads}\n"
         )
 
@@ -97,7 +97,7 @@ def validate_ipv4(value):
         sys.exit(f"Invalid IPv4 address format: {value}.")
 
 
-def validate_int_threshold(value, min: int):
+def validate_greater_than(value, min: int):
     try:
         num = int(value)
         if num < min:
