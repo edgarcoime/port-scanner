@@ -117,10 +117,10 @@ class PortScanner:
             for p in open_ports:
                 print(f"  - {p}")
 
-        # if len(filtered_ports) > 0:
-        #     print("Found the following FILTERED ports: ")
-        #     for p in filtered_ports:
-        #         print(f"  - {p}")
+        if len(filtered_ports) > 0:
+            print("Found the following FILTERED ports: ")
+            for p in filtered_ports:
+                print(f"  - {p}")
 
     def scan_port(
         self, target: str, port: int, timeout=SCAN_TIMEOUT_SEC, retries=SCAN_RETRIES
@@ -134,8 +134,9 @@ class PortScanner:
         # Send SYN packet until retries are exhausted
         for _ in range(retries):
             res = sr1(packet, timeout=timeout)
+
             if res is None:
-                return PortStatus.FILTERED
+                continue
 
             # Check if the response has the SYN-ACK flag set
             if res.haslayer(TCP):
