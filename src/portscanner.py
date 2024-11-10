@@ -52,7 +52,6 @@ class PortScanner:
         config = self.config
         print("Scanning Target IP: ", self.config.target)
 
-        rst_packet = IP(dst=config.target) / TCP(dport=config.end_port, flags="R")
         open_ports = []
         filtered_ports = []
         closed_ports = 0
@@ -82,9 +81,11 @@ class PortScanner:
                     status = future.result()
                     if status == PortStatus.OPEN:
                         open_ports.append(port)
+                        rst_packet = IP(dst=config.target) / TCP(dport=port, flags="R")
                         sr1(rst_packet, timeout=1)
                     elif status == PortStatus.FILTERED:
                         filtered_ports.append(port)
+                        rst_packet = IP(dst=config.target) / TCP(dport=port, flags="R")
                         sr1(rst_packet, timeout=1)
                     elif status == PortStatus.CLOSED:
                         closed_ports += 1
